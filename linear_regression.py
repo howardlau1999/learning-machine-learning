@@ -1,7 +1,7 @@
 import numpy as np
 
 def feature_normalize(X):
-    X_norm = X
+    X_norm = X.copy()
     n_features = X_norm.shape[0]
     m = X_norm.shape[1]
     for i in range(n_features):
@@ -18,7 +18,7 @@ def loss(W, X, y):
     y_hat = np.dot(W, X)
     return 0.5 * np.sum((y_hat - y) ** 2) / m
 
-def fit(X, y, learning_rate = 0.1, steps = 400):
+def linear_regression(X, y, learning_rate = 0.1, steps = 400):
     n = X.shape[0]
     m = X.shape[1]
     W = np.zeros((1, n))
@@ -42,16 +42,19 @@ def load_data(filename='ex1data2.txt', delimiter=','):
     m = X.shape[1]
     y = data[:, -1]
     y = y.reshape((1, m))
-    X = feature_normalize(X)
-    X = np.vstack((np.ones((1, m)), X))
+
+    
     return (X, y)
 
 def main():
-    X, y = load_data()
-    W = fit(X, y)
+    X, y = load_data('ex1data2.txt')
+    m = X.shape[1]
+    X_norm = np.vstack((np.ones((1, m)), feature_normalize(X)))
+    X = np.vstack((np.ones((1, m)), X))
+    W = linear_regression(X_norm, y)
     W_eqn = normal_equation(X, y)
-    print(W)
-    print(W_eqn)
+    print('Weights using gradient descent:', W)
+    print('Weights using normal equation:', W_eqn)
     
 if __name__ == '__main__':
     main()
