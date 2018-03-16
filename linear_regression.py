@@ -51,10 +51,9 @@ def main():
     m = X.shape[1]
     X_norm = np.vstack((np.ones((1, m)), feature_normalize(X)))
     X = np.vstack((np.ones((1, m)), X))
-    W = linear_regression(X_norm, y)
+    W = linear_regression(X_norm, y, 1, 1000)
     W_eqn = normal_equation(X, y)
     print('Weights using gradient descent:', W)
     print('Weights using normal equation:', W_eqn)
-    
 if __name__ == '__main__':
     main()
