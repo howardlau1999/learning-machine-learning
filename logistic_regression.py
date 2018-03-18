@@ -66,7 +66,7 @@ class BFGSOptimizer(Optimizer):
         ys = np.dot(self.y_k, self.s_k.T)
         ident = np.eye(n)
         mat_left = np.asmatrix((ident - np.dot(self.s_k.T, self.y_k) / ys))
-        mat_right = np.asmatrix((ident - np.dot(self.y_k.T, self.s_k) / ys))
+        mat_right = np.asmatrix(mat_left.T)
         self.D_k = mat_left * np.asmatrix(self.D_k) * mat_right + np.dot(self.s_k.T, self.s_k) / ys
         loss = self.loss(self.X, self.y, parameters=self.parameters, lambd=self.lambd)[0][0]
         return loss
