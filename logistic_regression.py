@@ -223,7 +223,7 @@ def decision_boundary(X, y, lr):
     x1 = np.arange(min_v, max_v, delta)
     x2 = np.arange(min_v, max_v, delta)
     PX, PY = np.meshgrid(x1, x2)
-    Z = lr.predict(np.c_[PX.ravel(), PY.ravel(), PX.ravel() ** 2, PY.ravel() ** 2].T)
+    Z = lr.predict(np.c_[PX.ravel(), PY.ravel()].T)
     points = int((max_v - min_v) / delta)
     Z = Z.reshape(points, points)
     plt.contourf(PX, PY, Z, 8, alpha=.75, cmap=plt.cm.Spectral)
@@ -259,7 +259,6 @@ def animate_fit(X, y, lr):
 def main():
     X, y = load_data()
     lr = LogisticRegression()   
-    X = np.vstack((X, X[0, :] ** 2, X[1, :] ** 2))
     # lr.fit(X, y, optimization='gradient_descent')
     # decision_boundary(X, y, lr)
     animate_fit(X, y, lr)
