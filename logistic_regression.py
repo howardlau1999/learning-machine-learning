@@ -107,11 +107,11 @@ class LogisticRegression():
 
 
 
-    def predict(self, X):
+    def predict(self, X, threshold = 0.5):
         original = X.copy()
         m = X.shape[1]
         X = np.vstack((np.ones((1, m)), X))
-        prediction = sigmoid(np.dot(self.parameters, X)) > 0.5
+        prediction = sigmoid(np.dot(self.parameters, X)) > threshold
         X = original
         return prediction
 
@@ -223,7 +223,7 @@ def decision_boundary(X, y, lr):
     x1 = np.arange(min_v, max_v, delta)
     x2 = np.arange(min_v, max_v, delta)
     PX, PY = np.meshgrid(x1, x2)
-    Z = lr.predict(np.c_[PX.ravel(), PY.ravel(), PX.ravel() ** 2, PY.ravel() ** 2].T)
+    Z = lr.predict(np.c_[PX.ravel(), PY.ravel()].T)
     points = int((max_v - min_v) / delta)
     Z = Z.reshape(points, points)
     plt.contourf(PX, PY, Z, 8, alpha=.75, cmap=plt.cm.Spectral)
@@ -256,13 +256,33 @@ def animate_fit(X, y, lr):
                               blit=False)
     plt.show()
 
+def plotROC(lr, X, y):
+    TP_rates = []
+    FP_rates = []
+    threshold = 0.0
+    while threshold < 1:
+        pred = lr.predict(X, threshold)
+        TP = np.sum(np.logical_and(y == 1, pred == 1))
+        TN = np.sum(np.logical_and(y == 0, pred == 0))
+        FP = np.sum(np.logical_and(y == 0, pred == 1))
+        FN = np.sum(np.logical_and(y == 1, pred == 0))
+
+        TP_rates.append(TP / (TP + FN))
+        FP_rates.append(FP / (FP + TN))
+        threshold += 0.01
+    plt.plot(FP_rates, TP_rates)
+    plt.plot([0, 1], [0, 1], '--')
+    plt.ylabel('TP')
+    plt.xlabel('FP')
+
 def main():
     X, y = load_data()
     lr = LogisticRegression()   
-    X = np.vstack((X, X[0, :] ** 2, X[1, :] ** 2))
-    # lr.fit(X, y, optimization='gradient_descent')
+    # X = np.vstack((X, X[0, :] ** 2, X[1, :] ** 2))
+    lr.fit(X, y, optimization='BFGS')
+    plotROC(lr, X, y)
     # decision_boundary(X, y, lr)
-    animate_fit(X, y, lr)
+    # animate_fit(X, y, lr)
     plt.show()
 if __name__ == '__main__':
     main()
