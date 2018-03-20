@@ -223,7 +223,7 @@ def decision_boundary(X, y, lr):
     x1 = np.arange(min_v, max_v, delta)
     x2 = np.arange(min_v, max_v, delta)
     PX, PY = np.meshgrid(x1, x2)
-    Z = lr.predict(np.c_[PX.ravel(), PY.ravel()].T)
+    Z = lr.predict(np.c_[PX.ravel(), PY.ravel(), PX.ravel() ** 2, PY.ravel() ** 2].T)
     points = int((max_v - min_v) / delta)
     Z = Z.reshape(points, points)
     plt.contourf(PX, PY, Z, 8, alpha=.75, cmap=plt.cm.Spectral)
@@ -277,12 +277,18 @@ def plotROC(lr, X, y):
 
 def main():
     X, y = load_data()
-    lr = LogisticRegression()   
-    # lr.fit(X, y, optimization='gradient_descent')
-    # X = np.vstack((X, X[0, :] ** 2, X[1, :] ** 2))
-    lr.fit(X, y, optimization='BFGS')
-    plotROC(lr, X, y)
-    # decision_boundary(X, y, lr)
+    m = X.shape[1]
+    indices = np.random.permutation(X.shape[1])
+    X, y = X[:, indices], y[:, indices]
+    X = np.vstack((X, X[0, :] ** 2, X[1, :] ** 2))
+    train_X, train_y = X[:, 0:int(m * 0.8)], y[:, 0: int(m * 0.8)]
+    test_X, test_y = X[:, int(m * 0.8):], y[:, int(m * 0.8):]
+    lr = LogisticRegression()       
+    lr.fit(train_X, train_y, optimization='BFGS', lambd = .1)
+    train_acc = np.sum(lr.predict(train_X) == train_y) / (train_X.shape[1])
+    test_acc = np.sum(lr.predict(test_X) == test_y) / (test_X.shape[1])
+    decision_boundary(X, y, lr)
+    print(train_acc, test_acc)
     # animate_fit(X, y, lr)
     plt.show()
 if __name__ == '__main__':
