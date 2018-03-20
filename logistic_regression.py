@@ -278,13 +278,10 @@ def plotROC(lr, X, y):
 def main():
     X, y = load_data()
     lr = LogisticRegression()   
-<<<<<<< HEAD
     # lr.fit(X, y, optimization='gradient_descent')
-=======
     # X = np.vstack((X, X[0, :] ** 2, X[1, :] ** 2))
     lr.fit(X, y, optimization='BFGS')
     plotROC(lr, X, y)
->>>>>>> decision_tree
     # decision_boundary(X, y, lr)
     # animate_fit(X, y, lr)
     plt.show()
