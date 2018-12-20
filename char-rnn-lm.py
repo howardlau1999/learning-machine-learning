@@ -73,8 +73,8 @@ def train(model, dataset, lr=1e-3, epochs=10):
     model.train()
     train_iter = torchtext.data.BPTTIterator(
             dataset,
-            batch_size=128,
-            bptt_len=32,
+            batch_size=2048,
+            bptt_len=33,
             device=device,
             repeat=False
         )
@@ -84,7 +84,7 @@ def train(model, dataset, lr=1e-3, epochs=10):
     hidden = None
     total_loss = 0.
     for epoch in range(epochs):
-        epoch_loss = 0.
+        epoch_loss = []
         train_iter.init_epoch()
         for i, batch in enumerate(tqdm(train_iter)):
             if hidden is None:
@@ -98,9 +98,9 @@ def train(model, dataset, lr=1e-3, epochs=10):
             loss = criterion(output.view(-1, vocab_size), target.view(-1))
             loss.backward()
             optimizer.step()
-            epoch_loss += loss.item() * output.size(0) * output.size(1)
-            if i % 100 == 0: print(''.join(generate_poem(model)))
-        epoch_loss /= len(dataset.examples[0].text)
+            epoch_loss.append(loss.item())
+            
+        epoch_loss = np.mean(epoch_loss)
         
-        print("Epoch Loss: %f" % epoch_loss)
-        
+        print("Epoch %d Loss: %f" % (epoch, epoch_loss))
+        print(''.join(generate_poem(model)))
