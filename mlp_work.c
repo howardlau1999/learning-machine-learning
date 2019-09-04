@@ -44,7 +44,7 @@ double*** alloc_weights() {
         for (int i = 0; i < sizes[l + 1]; ++i) {
             weights[l][i] = malloc(sizes[l] * sizeof(double));
             for (int j = 0; j < sizes[l]; ++j) {
-                weights[l][i][j] = random_(-1, 1);
+                weights[l][i][j] = random_(-5, 5);
             }
         }
     }
@@ -153,6 +153,8 @@ int main() {
     struct mlp net;
     struct bp cache;
 
+    srand(time(NULL));
+
     double input[4][2] = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
     double ground_truth[4][1] = {{0}, {1}, {1}, {0}};
     double output[1];
@@ -170,7 +172,7 @@ int main() {
             if (epoch % 1000 == 0)
                 printf("epoch %d, sample %d, loss %.6f\n", epoch, n, loss(output, ground_truth[n]));
             backward(ground_truth[n], &net, &cache);
-            optimize(1, &net, &cache);
+            optimize(0.3, &net, &cache);
             zero_grad(&cache);
         }
     }
