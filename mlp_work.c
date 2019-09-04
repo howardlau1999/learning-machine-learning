@@ -1,17 +1,25 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+// input_layer, hidden_layers..., output_layer
 int sizes[] = {2, 3, 4, 3, 1};
 int layers = sizeof(sizes) / sizeof(int);
-int batch_size = 1;
 
 struct mlp {
+    // biases[l][i] is the bias of the i-th neuron in layer l + 1
     double** biases;
+    // weights[l][i][j] is the weight of the edge
+    // connecting the j-th neuron in layer l and i-th neuron in layer l + 1
     double*** weights;
 };
 
 struct bp {
-    double **z, **a, **delta;
+    // input from previous layer
+    double **z;
+    // output after activation
+    double **a;
+    // back-prop error
+    double **delta;
 };
 
 double random_(double low, double high) { return (((high - low) * (double)rand() / RAND_MAX) + low); }
