@@ -19,13 +19,13 @@ $$
 To determine the class the E-mail belongs to, we only need to take argmax of every probability:
 
 $$
-\hat{y}=\argmax_{c}P(c|w_1, w_2, \ldots, w_{n_d})
+\hat{y}=\arg \max_{c}P(c|w_1, w_2, \ldots, w_{n_d})
 $$
 
-Because $P(w_1, w_2, \ldots, w_{n_d})$ is constant, we can omit the item from denumerator. And according to the naïve assumption that words are independent, we can simply the formula to:
+Because $P(w_1, w_2, \ldots, w_{n_d})$ is constant, we can omit the item from denominator. And according to the naïve assumption that words are independent, we can simply the formula to:
 
 $$
-\hat{y}=\argmax_{c}P(c)\prod^{n_d}_{i=1}P(w_i|c)
+\hat{y}=\arg \max_{c}P(c)\prod^{n_d}_{i=1}P(w_i|c)
 $$
 
 It is easy to compute $P(c_i)$:
@@ -49,7 +49,7 @@ $$
 Moreover, to avoid floating point precision problem, we take the logarithm of the probability and add them up instead of multiplying them:
 
 $$
-\hat{y}=\argmax_{c}\log P(c)\sum^{n_d}_{i=1}\log P(w_i|c)
+\hat{y}=\arg\max_{c}\log P(c)\sum^{n_d}_{i=1}\log P(w_i|c)
 $$
 
 This is our Naïve Bayes classifier model.
@@ -64,3 +64,15 @@ Arguments:
 
 - --data: Specify dataset used for training, choose from `""`, `"-400"`, `"-100"`, `"-50"`, default: `""`
 - --alpha: Specify smoothing factor of the model, should be greater than 0 and not greater than 1, default: `0.001`
+
+## Results
+
+Using the full training set, we achieve:
+
+```
+Precision: 98.46%
+Recall: 98.46%
+Accuracy: 98.46%
+F1 Score: 0.9846153846153847
+```
+
