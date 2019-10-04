@@ -1,0 +1,3 @@
+Total clock time: 27929700 ns
+Search clock time: 27929700 ns
+Number of nodes generated: 158

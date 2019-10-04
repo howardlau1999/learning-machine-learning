@@ -67,7 +67,7 @@ Arguments:
 
 ## Results
 
-Using the full training set, we achieve:
+Using the full training set and $\alpha=0.001$, we achieve:
 
 ```
 Precision: 98.46%
