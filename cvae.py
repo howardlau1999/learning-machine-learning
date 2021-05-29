@@ -1,5 +1,6 @@
 import os
 import torch
+import random
 import torchvision.transforms
 from torch.utils.data import sampler
 from torch.utils.data.dataloader import DataLoader, RandomSampler
@@ -13,6 +14,7 @@ from argparse import ArgumentParser
 from tqdm import tqdm
 import torch.nn.functional as F
 import torch.optim
+import numpy as np
 
 logger = logging.getLogger()
 logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s", level=logging.INFO)
@@ -144,6 +146,7 @@ if __name__ == "__main__":
     parser.add_argument("--model", type=str, default="linear")
     parser.add_argument("--dataset", type=str, default="mnist")
     parser.add_argument("--image_dir", type=str, default="images")
+    parser.add_argument("--seed", type=int, default=315)
 
     args = parser.parse_args()
 
@@ -151,6 +154,12 @@ if __name__ == "__main__":
 
     train_dataset = FashionMNIST("./", download=True, transform=torchvision.transforms.ToTensor())
     logger.info(f"Loaded {args.dataset} train dataset")
+
+    torch.manual_seed(args.seed)
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    if torch.cuda.is_available() and not args.no_cuda:
+        torch.cuda.manual_seed_all(args.seed)
 
     sampler = RandomSampler(train_dataset)
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, sampler=sampler)
