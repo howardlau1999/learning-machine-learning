@@ -152,7 +152,7 @@ if __name__ == "__main__":
 
     logger.info(f"Training args: {args}")
 
-    train_dataset = FashionMNIST("./", download=True, transform=torchvision.transforms.ToTensor())
+    train_dataset = DATASETS[args.dataset]("./", download=True, transform=torchvision.transforms.ToTensor())
     logger.info(f"Loaded {args.dataset} train dataset")
 
     torch.manual_seed(args.seed)
@@ -166,7 +166,7 @@ if __name__ == "__main__":
 
     device = "cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu"
 
-    model = MNISTConvCVAE(latent_dim=args.latent_dim).to(device)
+    model = MODELS[args.model](latent_dim=args.latent_dim).to(device)
     loss_fn = VAELoss().to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate)
 
